@@ -1,3 +1,8 @@
+Inserting:-
+insertOne({}):-
+insertMany([{},{},....])
+
+
 fecting:-
 findone():-
 findMany():-
@@ -29,32 +34,94 @@ db.getCollection('post').find({title:{$regex:/e/}})
 db.getCollection('post').find({title:{$regex:/e/i}})
 $type:-
 db.post.find({percent:{$type:'number'}})  
+$exists:-
+db.person.find({name:{$exists:true}}) 
+$type
+db.person.find({index:{$type:'int'}})
+$regex:-
+db.person.find({name:{$regex:/Al/i}}) 
+db.person.find({name:{$regex:/^Al/i}})
+db.person.find({name:{$regex:/^Al/}}) 
+array:-
+db.person.find({tags:'ad'})
+db.person.find({'tags.1':'ad'})
+$all:-
+db.person.find({tags:{$all:['ad','amet']}}) 
+$size:-
+db.person.find({tags:{$size:3}})  
+$elemMatch:-
+db.first.find({friends:{$elemMatch:{name:'Lora'}}}) 
+
+
+field filtering:-
+db.person.find({},{name:1,age:1,eyeColor:1,company:1}) 
+db.person.find({},{name:1,age:1,eyeColor:1,'company.location':1}) 
+db.person.find({},{name:1,age:1,eyeColor:1,_id:0}) 
 
 
 update:-
-updateOne()
-updateMany()
+update():-
+updateOne():-
+updateMany():-
+replaceOne():-
+db.shoppingCart.replaceOne({index:1},{index:2,proccessed:true,cart:['item1','item2']}) 
 
 $set:-
 updating a feild to all element
+db.shoppingCart.update({},{$set:{processer:false}},{multi:true}) 
 db.post.updateMany({},{$set:{shared:'True'}})
 db.post.updateMany({},{$set:{comments:20}}) 
 db.post.updateOne({postID:3511},{$set:{title:'what is the best way to learn python'}})
+db.shoppingCart.updateOne({index:1},{$set:{update_at:new Date()}}) 
 $unset
 db.post.updateMany({shared:'True'},{$unset:{shared:'pottan'}})
 $inc:-
 db.post.updateOne({postID:3512},{$inc:{comments:21}})  
 db.post.updateMany({},{$inc:{comments:21}}) 
+db.shoppingCart.updateOne({index:4,chunks:['django','orm']},{$set:{'chunks.$':['Django','ORM']}}) 
 $rename:-
 db.post.updateOne({title:'couples'},{$rename:{comments:'percentage'}})
 db.post.updateMany({title:'couples'},{$rename:{comments:'percentage'}})
+$currentDate:-
+db.shoppingCart.updateMany({update_at:{$exists:false}},{$currentDate:{update_at:true}}) 
+$push:-
+db.shoppingCart.updateOne({cartID:561},{$push:{cart:'item2'}}) 
+$each:-
+db.shoppingCart.updateOne({index:1},{$push:{cart:{$each:['item4','item5']}}}) 
+$addToSet:-
+db.shoppingCart.updateOne({index:1},{$addToSet:{cart:'item2'}})
+$each:-
+db.shoppingCart.updateOne({index:1},{$addToSet:{cart:{$each:['item2','item3','itme4']}}}) 
+appending array inside array:-
+db.shoppingCart.updateOne({index:1},{$addToSet:{cart:['item5','item6']}})
+$pop:-
+db.shoppingCart.updateOne({index:1},{$pop:{cart:1}})
+db.shoppingCart.updateOne({index:1},{$pop:{cart:-1}})
+$pull:-
+db.shoppingCart.updateOne({index:1},{$pull:{spent_amount:{$gt:500}}})
+db.shoppingCart.updateOne({index:1},{$pull:{spent_amount:200}}) 
+db.shoppingCart.updateOne({index:1},{$pull:{spent_amount:{$gte:400},cart:'item6'}}) 
+$pullAll:-
+db.shoppingCart.updateOne({index:1},{$pullAll:{spent_amount:[100,200,300],cart:['item2','item3','item4','item5']}})
+positional operator $:-
+db.shoppingCart.updateOne({index:1,cart:'item2'},{$set:{'cart.$':'kunjikunju'}})
+positional operator $ in nested Docs:-
+db.shoppingCart.updateOne({index:5,'cart.name':'pant'},{$set:{'cart.$.quantity':10}}) 
+db.shoppingCart.updateOne({index:5,'cart.name':'pant'},{$set:{'cart.$.quantity':10,'cart.$.name':'saaarrreee'}}) 
+positional operator $with $elemMatch:-
+db.shoppingcart.updateOne({index:5,cart:{$elemMatch:{name:'shirt',quantity:8}}},{$set:{'cart.$.quantity':100,'cart.$.name':'thattaam'}})
+positional $ array in array:-
+db.shoppingCart.updateOne({index:4,chunks:['django','orm']},{$set:{'chunks.$':['Django','ORM']}}) 
 
 delete:-
 deleteOne():-
 deleteMany():-
 
 db.post.deleteOne({postID:NumberInt(333)}) 
-db.post.deleteMany({title:{$exists:false}})   
+db.post.deleteMany({title:{$exists:false}})  
+
+count():-
+db.person.find({}).count() 
 
 Aggregation:-
 db.post.aggregate([{$group:{_id:'$author.name'}}]) 
