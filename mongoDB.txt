@@ -114,17 +114,79 @@ positional $ array in array:-
 db.shoppingCart.updateOne({index:4,chunks:['django','orm']},{$set:{'chunks.$':['Django','ORM']}}) 
 
 delete:-
+
+remove():-
 deleteOne():-
 deleteMany():-
 
+delete one using remove():-
+db.tempCollection.remove({},true)
+delete all using remove():-
+db.tempCollection.remove({},true)
+
+db.tempCollection.deleteOne({})   
+db.tempCollection.deleteOne({ _id: ObjectId("641ec00754047951d2025bc2")}) 
 db.post.deleteOne({postID:NumberInt(333)}) 
-db.post.deleteMany({title:{$exists:false}})  
+db.post.deleteMany({title:{$exists:false}})
+db.tempCollection.deleteMany({_id:{$eq:ObjectId("641ec00754047951d2025bc3")}}) 
+db.tempCollection.deleteMany({_id:{$ne:ObjectId("641ec00754047951d2025bc4")}})
+db.tempCollection.deleteMany({})
+
+deleteing collection with entire documents:-
+drop():-
+db.tempCollection.drop()
+deleting database with entire collections and documents:-
+dropDatabase():-
+
+  
 
 count():-
 db.person.find({}).count() 
 
 Aggregation:-
 db.post.aggregate([{$group:{_id:'$author.name'}}]) 
+with one stage :-
+$match:-
+db.person.aggregate([{$match:{tags:{$size:4}}}]) 
+$group:-
+db.person.aggregate({$group:{_id:'$gender'}}) 
+db.person.aggregate({$group:{_id:'$eyeColor'}}) 
+db.person.aggregate({$group:{_id:'$age'}}) 
+$group by nested fields:-
+db.person.aggregate([{$group:{_id:'$company.location.country'}}]) 
+$group by multiple field:-
+db.person.aggregate([{$group:{_id:{age:'$age',fruit:"$favoriteFruit",color:'eyeColor'}}}])
+$match and $group:-
+db.person.aggregate([{$match:{gender:'female'}},{$group:{_id:{age:'$age',color:'eyeColor',gender:'$gender'}}}])
+$group and $match:-
+db.person .aggregate([{$group:{_id:{age:'$age',color:'$eyeColor',sex:'$gender'}}},{$match:{"_id.sex":'female'}}]) 
+$count:-
+db.person.aggregate([{$count:'allDocumentsCount'}]) 
+db.person.aggregate([{$count:'total'}]) 
+db.person.aggregate([]).toArray().length 
+db.person.aggregate([]).itcount() 
+$group and $count:-
+db.person.aggregate([{$group:{_id:'$age'}},{$count:'age'}])
+db.person.aggregate([{$group:{_id:{age:'$age',sex:'$gender'}}},{$count:'ageAndgender'}])
+$match,$group and $count together:-
+db.person.aggregate([{$match:{age:{$gte:20}}},{$group:{_id:{sex:'$gender',eye:'$eyeColor'}}},{$count:'sex-And-eyeColor'}]) 
+$sort:-
+db.person.aggregate([{$sort:{name:1}}])
+db.person.aggregate([{$sort:{name:1,age:-1,eyeColor:1}}])
+$group and $sort:-
+db.person.aggregate([{$group:{_id:'$age'}},{$sort:{_id:1}}]) 
+db.person.aggregate([{$group:{_id:{eye:'$eyeColor',age:'$age'}}},{$sort:{'_id.eye':1,'_id.age':1}}])
+$match,$group and $count:-
+db.person.aggregate([{$match:{eyeColor:{$ne:'blue'}}},{$group:{_id:{eye:'$eyeColor',age:'$age'}}},{$sort:{'_id.eye':1,'_id.age':1}}])
+$project:-
+db.person.aggregate([{$project:{name:1,'company.location':1}}]) 
+db.person.aggregate([{$project:{name:1,'company.location':1,_id:0}}])
+db.person.aggregate([{$project:{name:0,company:0,_id:0}}])
+db.person.aggregate([{$project:{name:1,praayam:'$age'}}])
+db.person.aggregate([{$project:{name:1,info:{eye:'$eyeColor',age:'$age',location:'$company.location.country'}}}])
+
+
+
 
 utilities:-
 
