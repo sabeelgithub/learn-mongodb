@@ -142,6 +142,14 @@ dropDatabase():-
 
 count():-
 db.person.find({}).count() 
+limit():-
+db.person.find({}).limit(5)
+db.person.find({}).limit(5).count() 
+skip():-
+db.person.find({}).skip(0)
+db.person.find({}).skip(0).count()
+sort():-
+db.person.find({}).sort({gender:-1,eyeColor:-1}) 
 
 Aggregation:-
 db.post.aggregate([{$group:{_id:'$author.name'}}]) 
@@ -162,7 +170,7 @@ $group and $match:-
 db.person .aggregate([{$group:{_id:{age:'$age',color:'$eyeColor',sex:'$gender'}}},{$match:{"_id.sex":'female'}}]) 
 $count:-
 db.person.aggregate([{$count:'allDocumentsCount'}]) 
-db.person.aggregate([{$count:'total'}]) 
+db.person.aggregate([{$count:'total'}])   
 db.person.aggregate([]).toArray().length 
 db.person.aggregate([]).itcount() 
 $group and $count:-
@@ -184,6 +192,35 @@ db.person.aggregate([{$project:{name:1,'company.location':1,_id:0}}])
 db.person.aggregate([{$project:{name:0,company:0,_id:0}}])
 db.person.aggregate([{$project:{name:1,praayam:'$age'}}])
 db.person.aggregate([{$project:{name:1,info:{eye:'$eyeColor',age:'$age',location:'$company.location.country'}}}])
+$limit:-
+db.person.aggregate([{$limit:100}]) 
+$limit,$match and $group
+db.person.aggregate([{$limit:100},{$match:{eyeColor:{$ne:'blue'}}},{$group:{_id:{eye:'$eyeColor',sex:'$gender'}}},{$sort:{'_id.eye':1,'_id.sex':1}}])
+$unwind:-
+db.person.aggregate([{$unwind:'$tags'}]) 
+$unwind and $project:-
+db.person.aggregate([{$unwind:'$tags'},{$project:{name:1,index:1,tags:1}}])
+$unwind and $group:-
+db.person.aggregate([{$unwind:'$tags'},{$group:{_id:'$tags'}}]) 
+Accumulators:-
+$group and $sum:-
+db.person.aggregate([{$group:{_id:'$age',count:{$sum:1}}}]) 
+$unwind,$group,$sum:-
+db.person.aggregate([{$unwind:'$tags'},{$group:{_id:'$tags',count:{$sum:1}}}])  
+$group and $avg:-
+db.person.aggregate([{$group:{_id:'$company.location.country',avgAge:{$avg:'$age'}}}])
+$max:-
+db.person.aggregate([{$group:{_id:'$company.location.country',maxAge:{$max:'$age'}}}])
+$min:-
+db.person.aggregate([{$group:{_id:'$company.location.country',minAge:{$min:'$age'}}}])
+unary operators:-
+$type and project:-
+db.person.aggregate([{$project:{name:1,nameType:{$type:'$name'},tagsType:{$type:'$tags'},companyType:{$type:'$company'},ageType:{$type:'$age'}}}])
+$out:-
+db.person.aggregate([{$project:{name:1,nameType:{$type:'$name'},tagsType:{$type:'$tags'},companyType:{$type:'$company'},ageType:{$type:'$age'}}},{$out:'resultCollection'}])]
+
+  
+ 
 
 
 
