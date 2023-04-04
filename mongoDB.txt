@@ -5,7 +5,7 @@ insertMany([{},{},....])
 
 fecting:-
 findone():-
-findMany():-
+find():-
 
 $and:-
 db.getCollection('post').find({$and:[{comments:{$gte:10}},{comments:{$lte:10}},{shared:true}]})
@@ -122,7 +122,7 @@ deleteMany():-
 delete one using remove():-
 db.tempCollection.remove({},true)
 delete all using remove():-
-db.tempCollection.remove({},true)
+db.tempCollection.remove({})
 
 db.tempCollection.deleteOne({})   
 db.tempCollection.deleteOne({ _id: ObjectId("641ec00754047951d2025bc2")}) 
@@ -219,9 +219,10 @@ db.person.aggregate([{$project:{name:1,nameType:{$type:'$name'},tagsType:{$type:
 $out:-
 db.person.aggregate([{$project:{name:1,nameType:{$type:'$name'},tagsType:{$type:'$tags'},companyType:{$type:'$company'},ageType:{$type:'$age'}}},{$out:'resultCollection'}])]
 
-  
- 
-
+find document greater than name length 12.
+db.collection.find({ $expr: { $gt: [ { $strLenCP: "$name" }, 12 ] } })  
+This query uses the $expr operator to allow us to use an aggregation expression in the query. The $strLenCP operator is used to calculate the length of the "name" field in each document, and the $gt operator is used to compare that length to 12.
+db.person.find({name:{$regex:/^[\w]+\sS/i}})
 
 
 
